@@ -1,17 +1,5 @@
-// ==UserScript==
-// @name mega renamer
-// @namespace Violentmonkey Scripts
-// @match *://mega.nz/*
-// @require https://code.jquery.com/jquery-1.12.4.js
-// @require https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js
-// ==/UserScript==
-
-
-
-
 var data = [];
 
-// match *://192.168.2.12:999/*
 function createDialog()
 {
     $body = $("body");
