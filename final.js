@@ -1,3 +1,19 @@
+// ==UserScript==
+// @name megafromgit
+// @namespace Violentmonkey Scripts
+// @match *://mega.nz/*
+// @version 0.0.1
+// @require https://code.jquery.com/jquery-1.12.4.js
+// @require https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js
+// @updateURL   https://raw.githubusercontent.com/johnelliotbaker/megarename/master/final.js
+// @downloadURL https://raw.githubusercontent.com/johnelliotbaker/megarename/master/final.js
+// ==/UserScript==
+
+
+// updateURL   https://raw.githubusercontent.com/Charcoal-SE/Userscripts/master/fdsc/fdsc.meta.js
+// downloadURL https://raw.githubusercontent.com/Charcoal-SE/Userscripts/master/fdsc/fdsc.user.js
+
+
 var data = [];
 
 function createDialog()
