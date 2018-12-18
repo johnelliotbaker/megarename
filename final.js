@@ -2,7 +2,7 @@
 // @name megafromgit
 // @namespace Violentmonkey Scripts
 // @match *://mega.nz/*
-// @version 0.0.3
+// @version 0.0.4
 // @require https://code.jquery.com/jquery-1.12.4.js
 // @require https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js
 // @updateURL   https://raw.githubusercontent.com/johnelliotbaker/megarename/master/final.js
