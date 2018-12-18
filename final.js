@@ -10,10 +10,7 @@
 // ==/UserScript==
 
 
-// updateURL   https://raw.githubusercontent.com/Charcoal-SE/Userscripts/master/fdsc/fdsc.meta.js
-// downloadURL https://raw.githubusercontent.com/Charcoal-SE/Userscripts/master/fdsc/fdsc.user.js
-
-var test = "test version 0.0.3";
+var test = "test version 0.0.4";
 
 var data = [];
 
