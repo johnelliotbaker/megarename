@@ -3,15 +3,13 @@
 // @namespace Violentmonkey Scripts
 // @match *://mega.nz/*
 // @match *://192.168.2.12:999/*
-// @version 0.0.5
+// @version 0.0.7
 // @require https://code.jquery.com/jquery-1.12.4.js
 // @require https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js
 // @updateURL   https://raw.githubusercontent.com/johnelliotbaker/megarename/master/final.js
 // @downloadURL https://raw.githubusercontent.com/johnelliotbaker/megarename/master/final.js
 // ==/UserScript==
 
-
-var test = "test version 0.0.4";
 
 var data = [];
 
@@ -60,30 +58,41 @@ function createTr($parent, id="")
     return $tr
 }
 
-function createRow($parent, strn)
+function createRow($parent, strn, size="")
 {
-    $td = $("<td/>");
+    $td = $("<td/>").appendTo($parent);
     $textinput = $("<textarea/>")
-    .attr({ cols: "55", rows: "2" })
+    .attr({ cols: "35", rows: "2" })
     .css({ resize: "none", "font-size": "125%" })
     .html(strn)
     .appendTo($td);
     $parent.append($td);
-    $td = $("<td/>");
+
+    $td = $("<td/>").appendTo($parent);
+    $textinput = $("<textarea/>")
+    .attr({ cols: "5", rows: "2" })
+    .css({ resize: "none", "font-size": "125%" })
+    .addClass("ta_size")
+    .html(size)
+    .appendTo($td);
+
+    $td = $("<td/>").appendTo($parent);
     $textinput = $("<button/>")
     .attr({ type: "button" })
     .html("Jezalify")
     .appendTo($td)
     .click(jezalify);
     $parent.append($td);
-    $td = $("<td/>");
+
+    $td = $("<td/>").appendTo($parent);
     $textinput = $("<button/>")
     .attr({ type: "button" })
     .html("copy")
     .appendTo($td)
     .click(copyToClipboard);
     $parent.append($td);
-    $td = $("<td/>");
+
+    $td = $("<td/>").appendTo($parent);
     $textinput = $("<button/>")
     .attr({ type: "button" })
     .html("Docify")
@@ -102,25 +111,40 @@ function jezalify(e)
 {
     $curr = $(e.toElement);
     $textarea = getTextArea($curr);
-    $text = $textarea.val();
-    $strn = generate2($text);
-    $textarea.val($strn);
+    $titlearea = $($textarea[0]);
+    var filename = $titlearea.val();
+    $sizearea = $($textarea[1]);
+    var size = $sizearea.val();
+    var data = {"filename": filename, "size": size};
+    $strn = generate2(data);
+    $titlearea.val($strn);
 }
 
 function docify(e)
 {
     $curr = $(e.toElement);
     $textarea = getTextArea($curr);
-    $text = $textarea.val();
-    $strn = generate1($text);
-    $textarea.val($strn);
+    $titlearea = $($textarea[0]);
+    var filename = $titlearea.val();
+    $sizearea = $($textarea[1]);
+    var size = $sizearea.val();
+    var data = {"filename": filename, "size": size};
+    $strn = generate1(data);
+    $titlearea.val($strn);
 }
 
 function copyToClipboard(e)
 {
+    // $curr = $(e.toElement);
+    // $textarea = getTextArea($curr);
     $curr = $(e.toElement);
     $textarea = getTextArea($curr);
-    $textarea.select()
+    $titlearea = $($textarea[0]);
+    var filename = $titlearea.val();
+    $sizearea = $($textarea[1]);
+    var size = $sizearea.val();
+    var data = {"filename": filename, "size": size};
+    $titlearea.select()
     document.execCommand("copy");
     console.log("copied");
 }
@@ -138,9 +162,13 @@ function jezalifyAll()
     $tr.each(function(e)
         {
             $textarea = $($tr[e]).find("textarea");
-            $text = $textarea.val();
-            $strn = generate2($text);
-            $textarea.val($strn);
+            $titlearea = $($textarea[0]);
+            var filename = $titlearea.val();
+            $sizearea = $($textarea[1]);
+            var size = $sizearea.val();
+            var data = {"filename": filename, "size": size};
+            $strn = generate2(data);
+            $titlearea.val($strn);
         });
 }
 
@@ -151,28 +179,35 @@ function docifyAll()
     $tr.each(function(e)
         {
             $textarea = $($tr[e]).find("textarea");
-            $text = $textarea.val();
-            $strn = generate1($text);
-            $textarea.val($strn);
+            $titlearea = $($textarea[0]);
+            var filename = $titlearea.val();
+            $sizearea = $($textarea[1]);
+            var size = $sizearea.val();
+            var data = {"filename": filename, "size": size};
+            $strn = generate1(data);
+            $titlearea.val($strn);
         });
 }
 
 function createTopMenu($parent)
 {
 
-    console.log($parent);
     $div = $('<div align="center"><div/>').prependTo($parent);
-    console.log($div);
 
     $checkbox = $("<input/>")
         .attr({ type: "checkbox", id: "cb_mega", name:"cb_mega" })
+        .css({"opacity": "100"})
         .appendTo($div)
-    .click(function(){
-        $k = $("#cb_mega");
-        console.log($k.is(":checked"));
-    })
     $label = $("<label/>")
-        .html("m").appendTo($div);
+        .html("mega").appendTo($div);
+
+
+    $checkbox = $("<input/>")
+        .attr({ type: "checkbox", id: "cb_size", name:"cb_size" })
+        .css({"opacity": "100"})
+        .appendTo($div)
+    $label = $("<label/>")
+        .html("size").appendTo($div);
 
 
     $textinput = $("<button/>")
@@ -220,9 +255,10 @@ function updateContent(aStrn)
     $tbody.empty();
     for (var key in aStrn)
     {
-        strn = aStrn[key];
+        strnTitle = aStrn[key]['title'];
+        strnSize = aStrn[key]['size'];
         $tr = createTr($tbody);
-        createRow($tr, strn);
+        createRow($tr, strnTitle, strnSize);
     }
 }
 
@@ -260,9 +296,11 @@ function extractField(strn, type){
 }
 
 
-function generate2(strn)
+function generate2(data)
 {
     // preserve pattern
+    var strn = data['filename'];
+    var size = data['size'];
     strn = strn.replace(/([^\d])(\d)\.(\d)([^\d]|$)/gi, "$1$2***$3$4");
     strn = strn.replace(/(x|h)\.(264|265)/gi, "$1***$2");
     strn = normalizeWhitespace(strn);
@@ -287,13 +325,19 @@ function generate2(strn)
     {
         strn = "[MEGA] " + strn;
     }
+    if ($("#cb_size").is(":checked"))
+    {
+        strn += " [" + size + "]";
+    }
     var final = strn
     return final;
 }
     
 
-function generate1(strn)
+function generate1(data)
 {
+    var strn = data['filename'];
+    var size = data['size'];
     strn = normalizeWhitespace(strn);
     var strnOriginal = strn;
     var aField = {};
@@ -316,7 +360,6 @@ function generate1(strn)
     final = appendSubtitle(final, aField);
     final = appendReleaseGroups(final, aField);
     final = normalizeWhitespace(final);
-    console.log(final)
     return final;
 }
 
@@ -412,8 +455,10 @@ function searchData()
         $fn.each(function(i){
             $elem = $($fn[i]);
             var title = $elem.text();
-            console.log(title);
-            if (title) data.push(title);
+            var info = $('div[class="download info-txt small-txt"]');
+            var size = info.html();
+            entry = {title: title, size: size};
+            if (title) data.push(entry);
         })
     }
     $fn = $("span.file-block-title");
@@ -421,8 +466,13 @@ function searchData()
     {
         $fn.each(function(i){
             $elem = $($fn[i]);
+            $p = $elem.parent();
             var title = $elem.text();
-            if (title) data.push(title);
+            var info = $('div[class="download info-txt small-txt"]');
+            var titleText = $p.attr("title");
+            var size = /\s(\d+(mb|gb))\s/gi.exec(titleText);
+            entry = {title: title, size: size[1]};
+            if (title) data.push(entry);
         })
     }
     $fn = $("span.tranfer-filetype-txt");
@@ -431,8 +481,8 @@ function searchData()
         $fn.each(function(i){
             $elem = $($fn[i]);
             var title = $elem.text();
-            console.log(title);
-            if (title) data.push(title);
+            entry = {title: title, size: ""};
+            if (title) data.push(entry);
         })
     }
     return data;
