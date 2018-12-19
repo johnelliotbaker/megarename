@@ -2,7 +2,8 @@
 // @name megafromgit
 // @namespace Violentmonkey Scripts
 // @match *://mega.nz/*
-// @version 0.0.4
+// @match *://192.168.2.12:999/*
+// @version 0.0.5
 // @require https://code.jquery.com/jquery-1.12.4.js
 // @require https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js
 // @updateURL   https://raw.githubusercontent.com/johnelliotbaker/megarename/master/final.js
@@ -19,10 +20,17 @@ function createDialog()
     $body = $("body");
     $dialog = $('<dialog/>')
         .attr({ id: "myDlg", title: "Megalinks Renamer"})
+        .css({ "max-width": "80%" })
         .appendTo($body);
     $dlgTop = $("<div/>");
     $dlgBody = $("<div/>")
         .attr({ id: "myDlgBody" })
+        .css({
+        display: "block", position: "relative",
+        "margin-top": "10px",
+        "max-height": "80vh",
+        "overflow-y": "scroll",
+        })
         .appendTo($dialog);
     var myDlg = document.getElementById("myDlg");
     return $dialog;
@@ -36,12 +44,13 @@ function initDialog($dialog)
 
 function createTable($parent)
 {
+    $myDlgBody = $("#myDlgBody");
     $table = $('<table/>')
         .attr({ id: "myTable", style: "width: 100%", })
-        .appendTo($parent);
+        .appendTo($myDlgBody);
     $tbody = $('<tbody/>')
         .attr({ id: "myTableBody"})
-        .appendTo($table);
+        .appendTo($myDlgBody);
     return $table
 }
 
@@ -152,8 +161,19 @@ function createTopMenu($parent)
 {
 
     console.log($parent);
-    $div = $('<div align="center"><div/>').appendTo($parent);
+    $div = $('<div align="center"><div/>').prependTo($parent);
     console.log($div);
+
+    $checkbox = $("<input/>")
+        .attr({ type: "checkbox", id: "cb_mega", name:"cb_mega" })
+        .appendTo($div)
+    .click(function(){
+        $k = $("#cb_mega");
+        console.log($k.is(":checked"));
+    })
+    $label = $("<label/>")
+        .html("m").appendTo($div);
+
 
     $textinput = $("<button/>")
     .attr({ type: "button", id: "btn_load" })
@@ -242,6 +262,9 @@ function extractField(strn, type){
 
 function generate2(strn)
 {
+    // preserve pattern
+    strn = strn.replace(/([^\d])(\d)\.(\d)([^\d]|$)/gi, "$1$2***$3$4");
+    strn = strn.replace(/(x|h)\.(264|265)/gi, "$1***$2");
     strn = normalizeWhitespace(strn);
     var field = extractField(strn, "ext");
     for (var key in field)
@@ -255,11 +278,16 @@ function generate2(strn)
     arr.push(strn.slice(0, i).trim());
     arr.push("(" + strn.slice(i, i+4).trim() + ")");
     arr.push("(" + strn.slice(i+4).trim() + ")");
-    var strn = arr.join(" ");
-    var repl = [
-    ["5 1", "5.1"], ["7 1", "7.1"], ["2 0", "2.0"]
-    ]
-    final = replacePattern(strn, repl);
+    strn = arr.join(" ");
+    // restore preserved pattern
+    var repl = [ ["***", "."], ]
+    strn = replacePattern(strn, repl);
+    // Optionally prepend [MEGA]
+    if ($("#cb_mega").is(":checked"))
+    {
+        strn = "[MEGA] " + strn;
+    }
+    var final = strn
     return final;
 }
     
