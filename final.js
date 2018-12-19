@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name megafromgit
+// @name Mega Renamer
 // @namespace Violentmonkey Scripts
 // @match *://mega.nz/*
 // @match *://192.168.2.12:999/*
