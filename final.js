@@ -3,7 +3,7 @@
 // @namespace Violentmonkey Scripts
 // @match *://mega.nz/*
 // @match *://192.168.2.12:999/*
-// @version 0.0.8
+// @version 0.0.9
 // @require https://code.jquery.com/jquery-1.12.4.js
 // @require https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js
 // @updateURL   https://raw.githubusercontent.com/johnelliotbaker/megarename/master/final.js
@@ -92,13 +92,13 @@ function createRow($parent, strn, size="")
     .click(copyToClipboard);
     $parent.append($td);
 
-    $td = $("<td/>").appendTo($parent);
-    $textinput = $("<button/>")
-    .attr({ type: "button" })
-    .html("Docify")
-    .appendTo($td)
-    .click(docify);
-    $parent.append($td);
+    // $td = $("<td/>").appendTo($parent);
+    // $textinput = $("<button/>")
+    // .attr({ type: "button" })
+    // .html("Docify")
+    // .appendTo($td)
+    // .click(docify);
+    // $parent.append($td);
 }
 
 function getTextArea($elem)
@@ -197,6 +197,7 @@ function createTopMenu($parent)
     $checkbox = $("<input/>")
         .attr({ type: "checkbox", id: "cb_mega", name:"cb_mega" })
         .css({"opacity": "100"})
+        .prop("checked", true)
         .appendTo($div)
     $label = $("<label/>")
         .html("mega").appendTo($div);
@@ -205,6 +206,7 @@ function createTopMenu($parent)
     $checkbox = $("<input/>")
         .attr({ type: "checkbox", id: "cb_size", name:"cb_size" })
         .css({"opacity": "100"})
+        .prop("checked", true)
         .appendTo($div)
     $label = $("<label/>")
         .html("size").appendTo($div);
@@ -222,11 +224,11 @@ function createTopMenu($parent)
     .appendTo($div)
     .click(jezalifyAll);
 
-    $textinput = $("<button/>")
-    .attr({ type: "button" })
-    .html("Docify All")
-    .appendTo($div)
-    .click(docifyAll);
+    // $textinput = $("<button/>")
+    // .attr({ type: "button" })
+    // .html("Docify All")
+    // .appendTo($div)
+    // .click(docifyAll);
 
     var myDlg = document.getElementById("myDlg");
     $textinput = $("<button/>")
@@ -459,23 +461,24 @@ function searchData()
             var size = info.html();
             entry = {title: title, size: size};
             if (title) data.push(entry);
-        })
+        });
     }
     $fn = $("span.file-block-title");
     if ($fn.length > 0)
     {
+        console.log($fn);
         $fn.each(function(i){
             $elem = $($fn[i]);
+            console.log($elem);
             $p = $elem.parent();
             var title = $elem.text();
-            var info = $('div[class="download info-txt small-txt"]');
+
             var titleText = $p.attr("title");
-            var size = /\s((\d+)(mb|gb))\s/gi.exec(titleText);
-            size = size[2] + " " + size[3];
-            console.log(size);
+            var size = /(\s|^)((\d+)(kb|mb|gb))\s/gi.exec(titleText);
+            size = size[3] + " " + size[4];
             entry = {title: title, size: size};
             if (title) data.push(entry);
-        })
+        });
     }
     $fn = $("span.tranfer-filetype-txt");
     if ($fn.length > 0)
@@ -485,7 +488,7 @@ function searchData()
             var title = $elem.text();
             entry = {title: title, size: ""};
             if (title) data.push(entry);
-        })
+        });
     }
     return data;
 }
