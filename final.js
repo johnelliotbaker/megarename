@@ -3,7 +3,7 @@
 // @namespace Violentmonkey Scripts
 // @match *://mega.nz/*
 // @match *://192.168.2.12:999/*
-// @version 0.0.7
+// @version 0.0.8
 // @require https://code.jquery.com/jquery-1.12.4.js
 // @require https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js
 // @updateURL   https://raw.githubusercontent.com/johnelliotbaker/megarename/master/final.js
@@ -470,8 +470,10 @@ function searchData()
             var title = $elem.text();
             var info = $('div[class="download info-txt small-txt"]');
             var titleText = $p.attr("title");
-            var size = /\s(\d+(mb|gb))\s/gi.exec(titleText);
-            entry = {title: title, size: size[1]};
+            var size = /\s((\d+)(mb|gb))\s/gi.exec(titleText);
+            size = size[2] + " " + size[3];
+            console.log(size);
+            entry = {title: title, size: size};
             if (title) data.push(entry);
         })
     }
